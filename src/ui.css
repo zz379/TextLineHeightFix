@@ -1,0 +1,87 @@
+body {
+    margin: 0px 0px 0px 0px;
+}
+
+.desc {
+    font-size: 12px;
+    margin: 30px 24px 8px 24px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 14px;
+}
+
+.btn {
+    width: 120px;
+    height: 64px;
+    padding: 0px 0px 0px 0px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 16px;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+}
+
+.left-button {
+    margin: 0px 0px 0px 24px;
+}
+
+.right-button {
+    margin: 0px 0px 0px 13px;
+}
+
+.ios {
+    background: #2F80ED;
+}
+
+.android {
+    background: #39C574;
+}
+
+.fix {
+    background: #F9813E;
+}
+
+.ios::before {
+    background-image: url("./images/icon-ios.png");
+    background-size: 18px 21px;
+    width: 18px;
+    height: 21px;
+    margin: auto;
+    content: "";
+    display: block;
+    position: relative;
+}
+
+.android::before {
+    background-image: url("./images/icon-android.png");
+    background-size: 18px 21px;
+    width: 18px;
+    height: 21px;
+    margin: auto;
+    content: "";
+    display: block;
+    position: relative;
+}
+
+.ripple-container .ripple {
+    background-color: rgba(255, 255, 255, 0.2);
+    animation: ripple 1s forwards cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+    }
+}
