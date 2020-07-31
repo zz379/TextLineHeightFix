@@ -16,3 +16,11 @@ Text Line Height Fix 是一款调整文字行高的插件。它能够让设计�
 -Sketch 插件「Auto Fix iOS Text Line Height」作者 @Gis1on @Youngxkk。
 项目地址：https://github.com/youngxkk/AutoFixiOSTextLineHeight
 -插件中使用的波纹效果来自 https://github.com/GeekLiB/Material-Design-JS-Button
+
+版本更新说明
+v1.0.1
+增加修复Component内文字行高的功能
+
+运行命令
+开发环境：npx webpack --mode=development --watch
+生产环境：npx webpack --mode=production

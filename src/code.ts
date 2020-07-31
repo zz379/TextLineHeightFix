@@ -58,6 +58,16 @@ function instanceOfGroupNode(layer: SceneNode): layer is GroupNode {
   return layer.type === "GROUP";
 }
 
+// 判断选中的内容是否是Component
+function instanceOfComponentNode(layer: SceneNode): layer is ComponentNode {
+  return layer.type === "COMPONENT";
+}
+
+// 判断选中的内容是否是INSTANCE
+function instanceOfInstanceNode(layer: SceneNode): layer is InstanceNode {
+  return layer.type === "INSTANCE";
+}
+
 // 判断是否为 Symbol 
 function isSymbol(property: any): property is Symbol {
   return typeof property === 'symbol';
@@ -141,7 +151,7 @@ function onSetLineHeight(fixType: Symbol) {
     if (instanceOfTextNode(layer)) {
       console.log(`Selection has '${layer.type}' and FontSize = ${String(layer.fontSize)} and LineHeight = ${!isSymbol(layer.lineHeight) && layer.lineHeight['value'] ? layer.lineHeight['value'] : "未定义"}`);
       setLineHeight(layer, fixType);
-    } else if (instanceOfGroupNode(layer) || instanceOfFrameNode(layer)) {
+    } else if (instanceOfGroupNode(layer) || instanceOfFrameNode(layer) || instanceOfInstanceNode(layer)) {
       console.log(`There is a '${layer.type}' and children size = '${layer.children.length}'`);
       let textNodeArray: SceneNode[] = layer.findAll(function callback(node: SceneNode): boolean {
         return instanceOfTextNode(node);
@@ -153,6 +163,9 @@ function onSetLineHeight(fixType: Symbol) {
           setLineHeight(node, fixType);
         }
       }
+    } else if (instanceOfComponentNode(layer)) {
+      figma.notify("This selection is a master component, please be careful");
+      return;
     }
   }
 }
