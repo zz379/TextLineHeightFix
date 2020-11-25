@@ -1,9 +1,18 @@
 <head>
     <meta charset="UTF-8">
 </head>
-<p id="fix_devices_design" class="desc">Clicking to fix the corresponding design</p>
-<div>
-    <button id="ios_fix" class="btn ios left-button" data-ripple>ios fix</button><button id="android_fix" class="btn android right-button" data-ripple>android fix</button>
+<p id="fix_devices_design" class="desc">Click to fix </br> the corresponding design</p>
+<button id="ios_fix" class="btn ios" data-ripple>iOS Fix</button>
+<button id="android_fix" class="btn android" data-ripple>Android Fix</button>
+<div style="width:100%;height:1px; background:#DDDDDD; margin-top: 14px;"></div>
+<p id="fix_text_line_height" class="desc">Set the line height</p>
+<div class="display_flex" style="margin-top: 5px;">
+    <div id="font_size_desc">Font Size</div>
+    <img id="icon_multiplication" src="./images/icon-mult.png">
+    <div class="display_flex">
+        <input id="input_ratio" type="number" min="0" value="1.00" oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,2})\d*/,'$1$2$3')">
+        <img id="icon_sub" src="./images/icon-sub.png">
+        <img id="icon_add" src="./images/icon-add.png">
+    </div>
 </div>
-<p id="fix_text_line_height" class="desc">Setting the line height be accordant with the text height</p>
-<button id="text_height" class="btn fix left-button" data-ripple>text height</button>
+<button id="text_height" class="btn fix" data-ripple>Go</button>
