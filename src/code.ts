@@ -6,7 +6,7 @@
 // full browser environment (see documentation).
 
 // 构建字号和行高的对应关系Map，Android无规律可循
-const transMap = {
+const transMap: { [key: number]: number } = {
   5: 8, 6: 9, 7: 10, 8: 12, 9: 13, 10: 14,
   11: 15, 12: 17, 13: 18, 14: 19, 15: 21, 16: 22, 17: 23, 18: 25, 19: 27, 20: 28,
   21: 29, 22: 30, 23: 32, 24: 33, 25: 34, 26: 36, 27: 37, 28: 38, 29: 39, 30: 41,
@@ -30,7 +30,7 @@ figma.showUI(__html__, { width: 180, height: 258 });
 
 // Get and set history ratio
 figma.clientStorage.getAsync("ratio").then((res) => {
-  let historyRatio: number = res
+  const historyRatio: number = res
   console.log("设置历史倍率：" + historyRatio)
   figma.ui.postMessage({ type: "change_input_ratio", value: historyRatio })
 })
@@ -43,7 +43,7 @@ figma.ui.onmessage = msg => {
   // your HTML page is to use an object with a "type" property like this.
   console.log('-------------------------------------------------------------');
   console.log("message type : " + msg.type);
-  let count = figma.currentPage.selection.length;
+  const count = figma.currentPage.selection.length;
   if (count <= 0) {
     figma.notify("Please select a text layer");
     return;
@@ -54,7 +54,7 @@ figma.ui.onmessage = msg => {
   } else if (msg.type === 'fix_on_android_textview') {
     onSetLineHeight(FIX_TYPE_ANDROID);
   } else if (msg.type === 'fix_on_text_font_height') {
-    let currRatio: number = msg.value;
+    const currRatio: number = msg.value;
     figma.clientStorage.setAsync("ratio", currRatio);
     console.log("保存当前倍率：" + currRatio);
     onSetLineHeight(FIX_TYPE_TEXT_FONT_HEIGHT, currRatio);
@@ -90,16 +90,16 @@ function instanceOfInstanceNode(layer: SceneNode): layer is InstanceNode {
 }
 
 // 判断是否为 Symbol 
-function isSymbol(property: any): property is Symbol {
+function isSymbol(property: unknown): property is symbol {
   return typeof property === 'symbol';
 }
 
 // 根据不同的fixType，计算对应的高度
-function getRealLineHeight(fontSize: number, fixType: Symbol, ratio?: number): number {
+function getRealLineHeight(fontSize: number, fixType: symbol, ratio?: number): number | undefined {
   if (fixType === FIX_TYPE_IOS) {
     // 这个函数会把文本图层的每行文字的高度乘以lineHeigthMutiple 并设置成字体的真实高度
     let lineHeight: number;
-    let mod = fontSize % 10;
+    const mod = fontSize % 10;
     if (0 == mod) {
       lineHeight = fontSize + 2 * Math.floor(fontSize / 10);
     } else {
@@ -125,7 +125,7 @@ function getRealLineHeight(fontSize: number, fixType: Symbol, ratio?: number): n
 }
 
 // 设置行高
-async function setLineHeight(textLayer: TextNode, fixType: Symbol, ratio?: number) {
+async function setLineHeight(textLayer: TextNode, fixType: symbol, ratio?: number) {
   console.log("Prepare to change TextNode");
   console.log("文本内容：" + textLayer.characters + " " + typeof textLayer.fontName + " " + typeof textLayer.getRangeFontName(0, 1));
   if (textLayer.characters.length <= 0) {
@@ -135,9 +135,9 @@ async function setLineHeight(textLayer: TextNode, fixType: Symbol, ratio?: numbe
   // 加载字体
   try {
     if (isSymbol(textLayer.fontName)) {
-      let len = textLayer.characters.length;
+      const len = textLayer.characters.length;
       for (let i = 0; i < len; i++) {
-        let font = textLayer.getRangeFontName(i, i + 1);
+        const font = textLayer.getRangeFontName(i, i + 1);
         if (!isSymbol(font)) {
           console.log(`FontName = ${font.family} style = ${font.style} -- ${i}`);
           await figma.loadFontAsync(font);
@@ -151,18 +151,18 @@ async function setLineHeight(textLayer: TextNode, fixType: Symbol, ratio?: numbe
     return;
   }
   // 获取字号
-  let fontSize: number | PluginAPI['mixed'] = textLayer.fontSize;
+  const fontSize: number | PluginAPI['mixed'] = textLayer.fontSize;
   if (isSymbol(fontSize)) {
     figma.notify(`Cannot fix text layer with multiple font sizes -- Layer Content: ${textLayer.characters}`);
     return;
   }
   // 获取对应的行高
-  let lineHeight: number = getRealLineHeight(fontSize, fixType, ratio);
+  const lineHeight: number | undefined = getRealLineHeight(fontSize, fixType, ratio);
   if (lineHeight === undefined) {
     figma.notify("Do not support for this font size");
     return;
   }
-  let finalHeight: LineHeight = { value: lineHeight, unit: "PIXELS" };
+  const finalHeight: LineHeight = { value: lineHeight, unit: "PIXELS" };
   textLayer.lineHeight = finalHeight;
   console.log("Finish change TextNode");
   // 增加修复成功的提示
@@ -176,23 +176,23 @@ async function setLineHeight(textLayer: TextNode, fixType: Symbol, ratio?: numbe
 }
 
 // 整个插件的入口
-function onSetLineHeight(fixType: Symbol, ratio?: number) {
+function onSetLineHeight(fixType: symbol, ratio?: number) {
   const selection = figma.currentPage.selection;
   for (let i = 0; i < selection.length; i++) {
     const layer = selection[i];
     console.log("初始位置 X is " + layer.x + " Y is " + layer.y + " type is " + layer.type);
     if (instanceOfTextNode(layer)) {
-      console.log(`Selection has '${layer.type}' and FontSize = ${String(layer.fontSize)} and LineHeight = ${!isSymbol(layer.lineHeight) && layer.lineHeight['value'] ? layer.lineHeight['value'] : "未定义"}`);
+      console.log(`Selection has '${layer.type}' and FontSize = ${String(layer.fontSize)} and LineHeight = ${!isSymbol(layer.lineHeight) && 'value' in layer.lineHeight ? layer.lineHeight.value : "未定义"}`);
       setLineHeight(layer, fixType, ratio);
     } else if (instanceOfGroupNode(layer) || instanceOfFrameNode(layer) || instanceOfInstanceNode(layer)) {
       console.log(`There is a '${layer.type}' and children size = '${layer.children.length}'`);
-      let textNodeArray: SceneNode[] = layer.findAll(function callback(node: SceneNode): boolean {
+      const textNodeArray: SceneNode[] = layer.findAll(function callback(node: SceneNode): boolean {
         return instanceOfTextNode(node);
       });
       console.log(`TextNode length is '${textNodeArray.length}`);
       for (const node of textNodeArray) {
         if (instanceOfTextNode(node)) {
-          console.log(`Selection has '${node.type}' and FontSize = ${String(node.fontSize)} and LineHeight = ${!isSymbol(node.lineHeight) && node.lineHeight['value'] ? node.lineHeight['value'] : "未定义"}`);
+          console.log(`Selection has '${node.type}' and FontSize = ${String(node.fontSize)} and LineHeight = ${!isSymbol(node.lineHeight) && 'value' in node.lineHeight ? node.lineHeight.value : "未定义"}`);
           setLineHeight(node, fixType, ratio);
         }
       }

@@ -22,5 +22,8 @@ v1.0.1
 增加修复Component内文字行高的功能
 
 运行命令
+先设置环境变量：export NODE_OPTIONS=--openssl-legacy-provider
 开发环境：npx webpack --mode=development --watch
 生产环境：npx webpack --mode=production
+
+查看所有环境变量：env 命令
